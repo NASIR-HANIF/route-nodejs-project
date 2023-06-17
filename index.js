@@ -7,13 +7,17 @@ const server = http.createServer((request, response) => {
     // Dynamic route function
 const route = (path, response, code,type) => {
     fs.readFile(path, (error, datares) => {
-        if (error) {
-            throw error
-        } else {
+        if (datares) {
             response.writeHead(code, {
                 "Content-type": type
             });
             response.write(datares);
+            response.end();
+        } else {
+            response.writeHead(404, {
+                "Content-type": type
+            });
+            response.write("data not found");
             response.end();
         }
     })
@@ -61,12 +65,7 @@ const route = (path, response, code,type) => {
         let code = 200;
         let type = "text/css";
         route(path,response,code,type)
-        // images path 
-    }else if(request.url == "/images/gifs.gif"){
-        const path = "images/gifs.gif";
-        let code = 200;
-        let type = "image/gif";
-        route(path,response,code,type)
+
         //javascript path
     } else if(request.url == "/js/homepage.js"){
         const path = "js/homepage.js";
@@ -91,14 +90,27 @@ const route = (path, response, code,type) => {
       }else {
         // authenticated route
         const regExp = {
-            profile : /\/profile\?token=/
+            profile : /\/profile\?token=/,
+            images : /\/assets\/images\//,
+            videos : /\/assets\/videos\//
         };
        if(regExp.profile.test(request.url)){
         const path = "routes/profile.html";
         const code = 200;
         const type = "text/html";
         route(path,response,code,type)
-       }else{
+       }else if(regExp.images.test(request.url)){
+            const path = request.url.slice(1);
+            const code = 200;
+            const type = "image/jpeg";
+            route(path,response,code,type)
+           }else if(regExp.videos.test(request.url)){
+            const path = request.url.slice(1);
+            const code = 200;
+            const type = "video/mp4";
+            route(path,response,code,type)
+           }
+            else{
          // not found page route
         const path = "routes/not-found.html";
         const code = 404;

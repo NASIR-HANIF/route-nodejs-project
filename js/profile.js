@@ -13,7 +13,9 @@ const verifyToken = ()=>{
        const response = JSON.parse(ajax.response);
        if(response.isVerified){
         $(".loader").addClass("d-none");
-        $(".profile-page").removeClass("d-none")
+        $(".profile-page").removeClass("d-none");
+       const user = getUserInfo();
+       console.log(user)
         
        }else{
         localStorage.removeItem("__token");
@@ -23,6 +25,10 @@ const verifyToken = ()=>{
     }
 };
 
+
+const getUserInfo = ()=>{
+    
+}
 
 const logout = ()=>{
     const logoutBtn = document.querySelector(".logout-btn");
