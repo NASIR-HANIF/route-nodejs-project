@@ -31,8 +31,8 @@ exports.result = (request, response) => {
                                 isVerified: false
                             }
                             const insertRes = database.insertOne(data, "jwt_secrets");
-                            insertRes.then((successRes) => {
-                                const secret_id = successRes.data.insertedId;
+                            insertRes.then((success) => {
+                                const secret_id = success.data.insertedId;
                                 const token = jwt.sign({
                                     iss: fullUrl,
                                     data: successRes.data[0]
