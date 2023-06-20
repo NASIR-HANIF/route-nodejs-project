@@ -3,7 +3,7 @@ const fs = require("fs");
 const singup = require("./node-api/signup");
 const login = require("./node-api/login");
 const verifyToken = require("./node-api/verifyToken");
-const sendMail = require("./node-api/sendeMail");
+const sendMail = require("./node-api/sendMail");
 const server = http.createServer((request, response) => {
     // Dynamic route function
 const route = (path, response, code,type) => {
@@ -88,7 +88,7 @@ const route = (path, response, code,type) => {
       }else if(request.url == "/api/verifyToken" && request.method == "POST" ){
         verifyToken.result(request,response);
         
-      }else if(request.url == "/api/sendeMail" && request.method == "POST" ){
+      }else if(request.url == "/api/sendMail" && request.method == "POST" ){
         sendMail.result(request,response);
         
       }

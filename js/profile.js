@@ -1,6 +1,7 @@
 window.onload = () => {
     verifyToken();
     logout();
+    verifyNow();
 }
 
 
@@ -12,18 +13,28 @@ const verifyToken = () => {
     ajax.onload = () => {
         const response = JSON.parse(ajax.response);
         if (response.isVerified) {
-            $(".loader").addClass("d-none");
-            $(".profile-page").removeClass("d-none");
+
             const user = getUserInfo();
+            sessionStorage.setItem("username", user.email)
+            console.log(user)
             if (user.emailVerified) {
-                // email id already verefied
+
+                // emai verify honey pe work ho ga 
+                $(".loader").addClass("d-none");
+                $(".profile-page").removeClass("d-none");
+                $(".email-notice").addClass("d-none");
+
             } else {
                 // email not verified send email 
+                $(".loader").addClass("d-none");
+                $(".profile-page").addClass("d-none");
+                $(".email-notice").removeClass("d-none");
                 const reciept = JSON.stringify({
-                    email : user.email,
-                    subject : "node js verifecation link",
-                    message : "Testing ...",
-                    token : localStorage.getItem("__token")
+                    id: user._id,
+                    email: user.email,
+                    subject: "node js verifecation link",
+                    message: "Testing ...",
+                    token: localStorage.getItem("__token")
 
                 })
                 sendEmailVerificationLink(reciept);
@@ -45,12 +56,12 @@ const getUserInfo = () => {
 }
 
 // send email verifecation func 
-const sendEmailVerificationLink = (reciept)=>{
+const sendEmailVerificationLink = (reciept) => {
     const ajax = new XMLHttpRequest();
-    ajax.open("POST","http://localhost:8080/api/sendeMail",true);
+    ajax.open("POST", "http://localhost:8080/api/sendMail", true);
     ajax.send(reciept);
     // get response
-    ajax.onload = ()=>{
+    ajax.onload = () => {
         console.log(ajax.response)
 
     }
@@ -62,5 +73,15 @@ const logout = () => {
         localStorage.removeItem("__token");
         localStorage.removeItem("__secret_id");
         window.location = "http://localhost:8080";
+    }
+}
+
+// verifynow 
+const verifyNow = () => {
+    let verifyBtn = document.querySelector("#verify-now");
+    verifyBtn.onclick = () => {
+        const mailServer = sessionStorage.getItem("username").split("@")[1];
+        window.close();
+        window.location = `https://${mailServer}`;
     }
 }

@@ -1,6 +1,6 @@
 const query = require("querystring");
 const jwt = require("jsonwebtoken");
-const db = require("./db");
+const database = require("./db");
 
 exports.result = (request, response) => {
     let formData = "";
@@ -15,13 +15,37 @@ exports.result = (request, response) => {
         if (post.token && post.token != "") {
            const secretId = post.secretId;
            
-        const findRes = db.findById(secretId,"jwt_secrets");
+        const findRes = database.findById(secretId,"jwt_secrets");
         findRes
         .then((successRes)=>{
             const secret  = successRes.data[0].secret;
              // veryfey token
              jwt.verify(post.token,secret,(error,success)=>{
                 if(success){
+                    if(post.verify){
+                        const id = post.verify;
+                        const formData = {
+                            $set : {
+                                emailVerified : true
+                            }
+                        }
+                        
+                        // email verefy honey pe database me email ki value ko true ka function
+                     const veryfeyEmailMsg =  database.updataById(id,formData,"users");
+                     veryfeyEmailMsg.then((veryfyEmailRes)=>{
+                    const message = JSON.stringify({
+                        emailVerified : true,
+                        message : "email verify ok",
+                        data : veryfyEmailRes
+                    })
+                    sendResponse(response, 200, message)
+
+                        console.log(veryfyEmailRes) 
+                     }).catch((error)=>{
+                        console.log(error)
+                        sendResponse(response, 200, message)
+                     })
+                    }
                     const message = JSON.stringify({
                         isVerified: true,
                         message: "Token Verified !"

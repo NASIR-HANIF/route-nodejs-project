@@ -1,0 +1,31 @@
+      // email object call
+    const auth =  mail.createTransport({
+            service : "gmail", // servise provider ka name
+           auth : {
+            user : process.env.ADMIN_EMAIL_USERNAME, // jo send ker raha hey us ka email
+            pass :  process.env.ADMIN_EMAIL_PASSWORD // google app password
+           }
+        
+        })
+        
+        const mailOption = {
+            from : process.env.ADMIN_EMAIL_USERNAME,  
+             to : reciept.email,
+            subject : reciept.subject,
+            html : fs.readFileSync("routes/email-templet.html")
+         
+        }
+        auth.sendMail(mailOption,(error,mailRes)=>{
+            if(error)
+            throw error;
+            console.log("success !")
+            response.end();
+        })
+
+
+
+        // "choudryhammad127@gmail.com"
+// "hammadakram287@gmail.com"
+
+
+ <img src="https://www.tcpalm.com/gcdn/media/2017/07/29/TreasureCoast/TreasureCoast/636369506114393726-ThinkstockPhotos-510576580.jpg?width=660&height=660&fit=crop&format=pjpg&auto=webp" alt="Email image" width="200" height="200">

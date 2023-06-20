@@ -1,3 +1,5 @@
+const { promises } = require("nodemailer/lib/xoauth2");
+
 const mongodb = require("mongodb").MongoClient;
 const url = "mongodb://127.0.0.1:27017";
 const objectId = require("mongodb").ObjectId;
@@ -15,15 +17,15 @@ const config = () => {
 
 // find  or fetch data by id
 
-exports.findById = (id,collection_name) => {
+exports.findById = (id, collection_name) => {
     return new Promise((resolve, reject) => {
         config().then((db) => {
-          db.collection(collection_name).find({"_id" : new objectId(id)}).toArray().then((datares) => {
+            db.collection(collection_name).find({ "_id": new objectId(id) }).toArray().then((datares) => {
                 if (datares.length != 0) {
                     resolve({
                         status_code: 200,
                         data: datares,
-                        message : "match found !"
+                        message: "match found !"
                     })
                 } else {
                     reject({
@@ -43,15 +45,15 @@ exports.findById = (id,collection_name) => {
 
 // find  or fetch data
 
-exports.findFunc = (query,collection_name) => {
+exports.findFunc = (query, collection_name) => {
     return new Promise((resolve, reject) => {
         config().then((db) => {
-          db.collection(collection_name).find(query).toArray().then((datares) => {
+            db.collection(collection_name).find(query).toArray().then((datares) => {
                 if (datares.length != 0) {
                     resolve({
                         status_code: 200,
                         data: datares,
-                        message : "match found !"
+                        message: "match found !"
                     })
                 } else {
                     reject({
@@ -69,15 +71,15 @@ exports.findFunc = (query,collection_name) => {
 }
 
 // insert new user
-exports.insertOne = (userInfo,collection_name) => {
-    
-  return new Promise((resulve, reject) => {
+exports.insertOne = (userInfo, collection_name) => {
+
+    return new Promise((resulve, reject) => {
         config().then((db) => {
             db.collection(collection_name).insertOne(userInfo).then((insertRes) => {
                 resulve({
                     status_code: 200,
                     data: insertRes,
-                    message : "data inserted"
+                    message: "data inserted"
                 })
             }).catch((error) => {
                 reject({
@@ -90,4 +92,30 @@ exports.insertOne = (userInfo,collection_name) => {
         })
     })
 
+}
+
+// update by id 
+exports.updataById = (id, formData, collection_name) => {
+    return new Promise((resolve, reject) => {
+        config().then((db) => {
+            db.collection(collection_name)
+                .updateOne({
+                    "_id": new objectId(id)
+                },formData)
+                .then((updateRes) => {
+                    resolve({
+                        status_code: 201,
+                        data: updateRes,
+                        message: "email verify true"
+                    })
+                }).catch((errorRes) => {
+                    reject({
+                        status_code: 500,
+                        data : errorRes,
+                        message: "internel server error"
+                    })
+                })
+
+        })
+    })
 }
